@@ -1,52 +1,87 @@
+let page = 1;
+
+const fetchAndDisplayImage = async () => { 
+const searchString = document.getElementsByClassName("search-bar")[0].value;
+
+
+const encodedSearchString = encodeURIComponent(searchString)
+
+const result =  await fetch(`https://api.artic.edu/api/v1/artworks/search?q=${encodedSearchString}&fields=id,title,date_start,date_end,image_id&page=${page}`)
+const parsedResponse = await result.json();
+console.log(parsedResponse)
+const htmlArray = [];
+    for (let i = 0; i < parsedResponse.data.length; i++)
+    {
+        const src = `https://www.artic.edu/iiif/2/${parsedResponse.data[i].image_id}/full/843,/0/default.jpg`
+        const imgHtml = `<div class="card">
+        <img src=${src}>
+        <div class="imageContainer">
+          <h5 class="card-title">${parsedResponse.data[i].title}</h5>
+          <p class="card-text"> Date: ${parsedResponse.data[i].date_start}-${parsedResponse.data[i].date_end}
+          </p>
+         
+        </div>
+      </div>`
+      htmlArray.push(imgHtml)
+    }
+
+
+const htmlString = htmlArray.join('');
+document.getElementById("imageContainer").innerHTML = htmlString;
+
+htmlArray.push($(search-bar).val());
+}
 
 
 
-document.addEventListener('DOMContentLoaded', function() {// code here will execute after the document is loaded
-    document.addEventListener('click', function(event) { 
-            if(event.target.classList.contains("add-button")) {
-                const movieID = event.target.dataset.imdbid;
-                saveToWatchList(movieID);
-            }
-          })
- });
-
-///movies showing up in search bar//
-const myForm = document.getElementById('search-bar');//this renders out what we are retrieving from the API
-myForm.addEventListener('submit',async function(e){
-    e.preventDefault();
-
-    const searchString = document.getElementsByClassName("search-bar")[0].value;
-    const urlEncodedSearchString = encodeURIComponent(searchString);
-    await fetch("https://api.artic.edu/api/v1/artworks=" + urlEncodedSearchString)
-        .then(async function(response) {
-            return await response.json();
-        })
-        .then(function(data) {//actual usuable data that we can do something with//
-        document.getElementsByClassName("art-container")[0].innerHTML = renderMovie(data.Search);// event listener code goes here
-       artData = data.Search;
-        });
+const searchForm = document.getElementById("search-form");
+searchForm.addEventListener("submit", function(event) {
+    event.preventDefault();
+    fetchAndDisplayImage();
+    
+    
 
 })
 
+const paginationContainer = document.getElementsByClassName("pagination")[0];
 
-const renderArt = (artArray) => {
-    const movieHtmlArray = movieArray.map(function(currentMovie) {
-       return ${}
-    })
-    return movieHtmlArray.join('');
+const removeActiveClass = () => {
+    const currentActiveButton = document.getElementById(page);
+    currentActiveButton.className = "pageNumber";
+} 
+
+const addActiveClass = (pageNumber) => {
+    const newActiveButton = document.getElementById(pageNumber);
+    newActiveButton.className = "active pageNumber"
 }
 
-const saveToWatchList = (movieID) => {
-    const movie = movieData.find((currentMovie) => {
-        return currentMovie.imdbID == movieID;
-    })
-    let watchlistJSON = localStorage.getItem("watchlist");
-    let watchlist = JSON.parse(watchlistJSON);
-
-    if (watchlist == null) { //if they didn't have a watchlist yet//
-        watchlist = [];
+paginationContainer.addEventListener("click", (event) => {
+    if(event.target.classList.contains("pageNumber") && event.target.id != page) {
+        removeActiveClass();
+        page = event.target.id;
+        addActiveClass(page)
+        fetchAndDisplayImage();
     }
-    watchlist.push(movie);
-    watchlistJSON = JSON.stringify(watchlist); //turns it back into a string, and then save it into local
-    localStorage.setItem("watchlist", watchlistJSON);
-}
+})
+
+const decrementButton = document.getElementById("decrement");
+const incrementButton = document.getElementById("increment");
+
+decrementButton.addEventListener("click", () =>{
+    if(page > 1) {
+        removeActiveClass();
+        page--
+        addActiveClass(page);
+        fetchAndDisplayImage();
+    }
+})
+
+incrementButton.addEventListener("click", () => {
+    if(page < 6) {
+        removeActiveClass();
+        page++
+        addActiveClass(page);
+        fetchAndDisplayImage();
+    }
+})
+
