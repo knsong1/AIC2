@@ -20,7 +20,7 @@ const fetchAndDisplayImage = async () => {
         <div class="card" id="cardContainer">
         <img src=${src}
          <a href="#" title="${info}" data-toggle="popover" data-trigger="hover" data-content="Some content" delay: { show: 5, hide: 1000 }></a>
-          <h5 class="card-title">${parsedResponse.data[i].title}</h5>
+          <a href="${src}" target="_blank" class="card-title">${parsedResponse.data[i].title}</a>
           <p class="card-text"> Date: ${parsedResponse.data[i].date_start}-${parsedResponse.data[i].date_end}
           </p>
       </div>`;

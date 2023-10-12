@@ -60,7 +60,6 @@ html, body {
 }
 
 #search-form {
-    border-color:rgb(134, 31, 13);
     border-bottom: 1px;
     border-width: 1px;
 }
@@ -68,7 +67,6 @@ html, body {
 .pagination {
     width: 100%;
     position:fixed;
-    display: inline-block;
     bottom: 1px;
     display: flex;
     
@@ -102,9 +100,10 @@ html, body {
     margin: auto;
     padding: 15px;
     text-decoration: none;
+    text-align: center;
   }
 
-  a:hover {
+  .pagination a:hover {
     background-color: rgb(194, 23, 23);
   }
 
@@ -125,6 +124,26 @@ html, body {
     row-gap: 50px;
     margin: 50px;
     
+}
+
+.card-title {
+    text-decoration: none;
+
+}
+
+
+
+.card-title:hover {
+    background-color: none;
+
+}
+
+a:visited {
+    color: transparent;
+}
+
+a {
+ color: black;
 }
 
 .card-text {
